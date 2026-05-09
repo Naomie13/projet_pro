@@ -8,7 +8,7 @@ public class TableRestaurant {
 	 private boolean status;
 	 
 	 public TableRestaurant(int id, int tableNumber, int capacity,boolean status) {
-		super();
+		
 		this.id = id;
 		this.tableNumber = tableNumber;
 		this.capacity = capacity;
