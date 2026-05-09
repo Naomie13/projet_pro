@@ -2,8 +2,8 @@ package model;
 
 public class Chief extends Employee {
 
-	public Chief(int id, String name, double salary) {
-		super(id, name, salary);
+	public Chief(int id, String name) {
+		super(id, name);
 	}
 	
 
