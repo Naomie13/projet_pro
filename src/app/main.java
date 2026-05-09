@@ -22,5 +22,7 @@ public class Main {
 
         // AFFICHAGE
         System.out.println(order);
+        
+        
     }
 }
