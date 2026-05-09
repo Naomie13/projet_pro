@@ -1,6 +1,6 @@
 package model;
 
-public class MenuItem {
+public abstract class MenuItem {
 	
 	 private int id;
 	 private String name;
