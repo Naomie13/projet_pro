@@ -8,6 +8,10 @@ public class TableRestaurant {
 	 private boolean status;
 	 
 	 public TableRestaurant(int id, int tableNumber, int capacity,boolean status) {
+<<<<<<< HEAD
+=======
+		
+>>>>>>> 0b4ae411dd4c8b933de50656588997204a579443
 		this.id = id;
 		this.tableNumber = tableNumber;
 		this.capacity = capacity;
