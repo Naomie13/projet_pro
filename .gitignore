@@ -1,0 +1,16 @@
+# Compiled files
+bin/
+*.class
+
+# IntelliJ
+.idea/
+*.iml
+
+# Eclipse
+.classpath
+.project
+.settings/
+
+# Windows
+Thumbs.db
+desktop.ini
