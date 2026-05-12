@@ -9,7 +9,7 @@ public class Reservation {
     private LocalDateTime dateTime;
 
     public Reservation(Customer customer,
-    		TableRestaurant table,
+                       TableRestaurant table,
                        LocalDateTime dateTime) {
 
         this.customer = customer;
@@ -27,5 +27,15 @@ public class Reservation {
 
     public LocalDateTime getDateTime() {
         return dateTime;
+    }
+
+    @Override
+    public String toString() {
+        return "Reservation for " +
+                customer.getName() +
+                " | Table: " +
+                table.getTableNumber() +
+                " | Date: " +
+                dateTime;
     }
 }

@@ -7,8 +7,11 @@ import java.util.List;
 
 public class ReservationService {
 
-    private List<Reservation> reservations =
-            new ArrayList<>();
+    private List<Reservation> reservations;
+
+    public ReservationService() {
+        reservations = new ArrayList<>();
+    }
 
     public void addReservation(Reservation reservation) {
         reservations.add(reservation);
@@ -16,5 +19,9 @@ public class ReservationService {
 
     public List<Reservation> getReservations() {
         return reservations;
+    }
+
+    public void removeReservation(Reservation reservation) {
+        reservations.remove(reservation);
     }
 }

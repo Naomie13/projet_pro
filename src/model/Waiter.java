@@ -2,7 +2,7 @@ package model;
 
 public class Waiter extends Employee{
 
-	public Waiter(int id, String name, double salary) {
+	public Waiter(int id, String name) {
 		super(id, name);
 	}
 
