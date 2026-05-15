@@ -1,9 +1,11 @@
 package app;
 
+
 import java.util.Scanner;
 
 import facade.RestaurantFacade;
 import model.*;
+import strategy.*;
 
 public class RestaurantConsole {
 
@@ -26,6 +28,7 @@ public class RestaurantConsole {
                 case 3: manageTables(); break;
                 case 4: manageEmployees(); break;
                 case 5: manageReservations(); break;
+                case 6: manageStock(); break;
                 case 0: System.out.println("Application closed."); break;
                 default: System.out.println("Invalid choice.");
             }
@@ -39,6 +42,7 @@ public class RestaurantConsole {
         System.out.println("3. Manage Tables");
         System.out.println("4. Manage Employees");
         System.out.println("5. Manage Reservations");
+        System.out.println("6. Manage Stock");
         System.out.println("0. Exit");
         System.out.print("Choice : ");
     }
@@ -127,7 +131,7 @@ public class RestaurantConsole {
                 case 4: updateOrderState("prepare"); break;
                 case 5: updateOrderState("ready"); break;
                 case 6: updateOrderState("serve"); break;
-                case 7: updateOrderState("pay"); break;
+                case 7: payOrderWithStrategy(); break;
                 case 8: updateOrderState("cancel"); break;
                 case 0: break;
                 default: System.out.println("Invalid choice.");
@@ -172,11 +176,35 @@ public class RestaurantConsole {
             case "prepare": restaurant.prepareOrder(orderId); break;
             case "ready":   restaurant.readyOrder(orderId); break;
             case "serve":   restaurant.serveOrder(orderId); break;
-            case "pay":     restaurant.payOrder(orderId); break;
             case "cancel":  restaurant.cancelOrder(orderId); break;
         }
     }
+    private void payOrderWithStrategy() {
+        System.out.print("Order ID: ");
+        int orderId = scanner.nextInt();
 
+        System.out.println("Méthode de paiement:");
+        System.out.println("1. Espèces (-2%)");
+        System.out.println("2. Carte (+1.5%)");
+        System.out.println("3. En ligne (+2.5%)");
+        System.out.print("Choix: ");
+        int choice = scanner.nextInt();
+
+        PaymentStrategy strategy;
+        switch (choice) {
+            case 1: strategy = new CashStrategy(); break;
+            case 2: strategy = new CardStrategy(); break;
+            case 3: strategy = new OnlineStrategy(); break;
+            default:
+                System.out.println("Choix invalide.");
+                return;
+        }
+
+        double total = restaurant.payOrder(orderId, strategy);
+        System.out.println("Paiement effectué : " + String.format("%.2f", total) + " €");
+    }
+
+    
     // ================= TABLES =================
     private void manageTables() {
         int choice;
@@ -300,4 +328,62 @@ public class RestaurantConsole {
             System.out.println(reservation);
         }
     }
+    
+    
+    private void manageStock() {
+        int choice;
+        do {
+            System.out.println("\n--- STOCK MANAGEMENT ---");
+            System.out.println("1. Add Ingredient");
+            System.out.println("2. Show All Ingredients");
+            System.out.println("3. Consume Ingredient");
+            System.out.println("4. Restock Ingredient");
+            System.out.println("5. Show Low Stock");
+            System.out.println("0. Back");
+            choice = scanner.nextInt();
+            switch (choice) {
+                case 1: addIngredient(); break;
+                case 2: restaurant.getAllIngredients().forEach(System.out::println); break;
+                case 3: consumeIngredient(); break;
+                case 4: restockIngredient(); break;
+                case 5: restaurant.getLowStockIngredients().forEach(System.out::println); break;
+                case 0: break;
+                default: System.out.println("Invalid choice.");
+            }
+        } while (choice != 0);
+    }
+
+    private void addIngredient() {
+        System.out.print("ID: ");
+        int id = scanner.nextInt();
+        scanner.nextLine();
+        System.out.print("Nom: ");
+        String name = scanner.nextLine();
+        System.out.print("Quantité initiale: ");
+        double quantity = scanner.nextDouble();
+        System.out.print("Quantité minimum: ");
+        double min = scanner.nextDouble();
+        scanner.nextLine();
+        System.out.print("Unité (kg/L/pcs): ");
+        String unit = scanner.nextLine();
+        restaurant.addIngredient(new Ingredient(id, name, quantity, min, unit));
+        System.out.println("Ingrédient ajouté.");
+    }
+
+    private void consumeIngredient() {
+        System.out.print("Ingredient ID: ");
+        int id = scanner.nextInt();
+        System.out.print("Quantité à consommer: ");
+        double amount = scanner.nextDouble();
+        restaurant.consumeIngredient(id, amount);
+    }
+
+    private void restockIngredient() {
+        System.out.print("Ingredient ID: ");
+        int id = scanner.nextInt();
+        System.out.print("Quantité à ajouter: ");
+        double amount = scanner.nextDouble();
+        restaurant.restockIngredient(id, amount);
+    }
+    
 }

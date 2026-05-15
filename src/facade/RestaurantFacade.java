@@ -5,6 +5,8 @@ import factory.MenuItemFactory;
 import model.*;
 import service.*;
 import observer.*;
+import strategy.*;
+
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -16,13 +18,15 @@ public class RestaurantFacade {
     private TableRestaurantService tableService;
     private EmployeeService employeeService;
     private ReservationService reservationService;
-
+    private StockService stockService;
+    
     public RestaurantFacade() {
         this.menuService = new MenuService();
         this.orderService = new OrderService();
         this.tableService = new TableRestaurantService();
         this.employeeService = new EmployeeService();
         this.reservationService = new ReservationService();
+        this.stockService = new StockService();
     }
 
     // ===== MENU =====
@@ -102,13 +106,18 @@ public class RestaurantFacade {
         if (order != null) order.serve();
     }
 
-    public void payOrder(int orderId) {
+    public double payOrder(int orderId, PaymentStrategy strategy) {
         Order order = orderService.findOrderById(orderId);
-        if (order != null) {
-            order.pay();
-            TableRestaurant table = order.getTable();
-            if (table != null) tableService.freeTable(table);
+        if (order == null) {
+            System.out.println("Commande introuvable.");
+            return 0;
         }
+        double amount = order.calculateTotal();
+        double finalAmount = strategy.processPayment(amount);
+        order.pay();
+        TableRestaurant table = order.getTable();
+        if (table != null) tableService.freeTable(table);
+        return finalAmount;
     }
 
     public void cancelOrder(int orderId) {
@@ -149,5 +158,25 @@ public class RestaurantFacade {
 
     public List<Reservation> getAllReservations() {
         return reservationService.getReservations();
+    }
+    
+    public void addIngredient(Ingredient ingredient) {
+        stockService.addIngredient(ingredient);
+    }
+
+    public void consumeIngredient(int id, double amount) {
+        stockService.consume(id, amount);
+    }
+
+    public void restockIngredient(int id, double amount) {
+        stockService.restock(id, amount);
+    }
+
+    public List<Ingredient> getAllIngredients() {
+        return stockService.getAllIngredients();
+    }
+
+    public List<Ingredient> getLowStockIngredients() {
+        return stockService.getLowStockIngredients();
     }
 }
