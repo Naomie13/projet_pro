@@ -3,10 +3,7 @@ package app;
 public class Main {
 
     public static void main(String[] args) {
-
-        RestaurantConsole console =
-                new RestaurantConsole();
-
+        RestaurantConsole console = new RestaurantConsole();
         console.start();
     }
 }
