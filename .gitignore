@@ -11,6 +11,10 @@ bin/
 .project
 .settings/
 
+# Generated data
+data/
+
+
 # Windows
 Thumbs.db
 desktop.ini

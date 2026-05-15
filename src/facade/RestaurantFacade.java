@@ -20,6 +20,7 @@ public class RestaurantFacade {
     private ReservationService reservationService;
     private StockService stockService;
     private ReportService reportService;
+    private SaveService saveService;
     
     public RestaurantFacade() {
         this.menuService = new MenuService();
@@ -28,12 +29,36 @@ public class RestaurantFacade {
         this.employeeService = new EmployeeService();
         this.reservationService = new ReservationService();
         this.stockService = new StockService();
+        this.saveService = new SaveService();
         this.reportService = new ReportService(
-        	    orderService.getAllOrders(),
-        	    menuService.getAllItems(),
-        	    tableService.getAllTables(),
-        	    stockService.getAllIngredients()
-        	);
+            orderService.getAllOrders(),
+            menuService.getAllItems(),
+            tableService.getAllTables(),
+            stockService.getAllIngredients()
+        );
+        loadData();
+    }
+
+    private void loadData() {
+        List<TableRestaurant> tables = saveService.loadTables();
+        if (!tables.isEmpty()) {
+            for (TableRestaurant t : tables) {
+                if (tableService.findTableByNumber(t.getTableNumber()) == null) {
+                    tableService.addTable(t);
+                }
+            }
+            System.out.println("[LOAD] " + tables.size() + " tables chargées.");
+        }
+
+        List<Ingredient> ingredients = saveService.loadIngredients();
+        if (!ingredients.isEmpty()) {
+            for (Ingredient i : ingredients) {
+                if (!stockService.findById(i.getId()).isPresent()) {
+                    stockService.addIngredient(i);
+                }
+            }
+            System.out.println("[LOAD] " + ingredients.size() + " ingrédients chargés.");
+        }
     }
 
     // ===== MENU =====
@@ -85,8 +110,8 @@ public class RestaurantFacade {
         if (table == null) return null;
         tableService.occupyTable(table);
         Order order = orderService.createOrder(id, table);
-        order.addObserver(new KitchenObserver()); // ← nouveau
-        order.addObserver(new WaiterObserver());  // ← nouveau
+        order.addObserver(new KitchenObserver()); 
+        order.addObserver(new WaiterObserver());
         return order;
     }
 
@@ -200,4 +225,23 @@ public class RestaurantFacade {
     public void generateTableReport() { reportService.generateTableReport(); }
     public void generateStockReport() { reportService.generateStockReport(); }
     public void generateFullReport() { reportService.generateFullReport(); }
+    
+    public void saveAll() {
+        saveService.saveAll(
+            menuService.getAllItems(),
+            tableService.getAllTables(),
+            stockService.getAllIngredients()
+        );
+    }
+
+    public List<TableRestaurant> loadTables() {
+        return saveService.loadTables();
+    }
+
+    public List<Ingredient> loadIngredients() {
+        return saveService.loadIngredients();
+    }
+    
+    
+    
 }

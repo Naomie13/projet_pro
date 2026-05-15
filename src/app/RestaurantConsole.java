@@ -1,6 +1,7 @@
 package app;
 
 
+import java.util.List;
 import java.util.Scanner;
 
 import facade.RestaurantFacade;
@@ -15,6 +16,7 @@ public class RestaurantConsole {
     public RestaurantConsole() {
         scanner = new Scanner(System.in);
         restaurant = new RestaurantFacade();
+        loadData();
     }
 
     public void start() {
@@ -30,6 +32,7 @@ public class RestaurantConsole {
                 case 5: manageReservations(); break;
                 case 6: manageStock(); break;
                 case 7: manageReports(); break;
+                case 8: restaurant.saveAll(); break;
                 case 0: System.out.println("Application closed."); break;
                 default: System.out.println("Invalid choice.");
             }
@@ -45,6 +48,7 @@ public class RestaurantConsole {
         System.out.println("5. Manage Reservations");
         System.out.println("6. Manage Stock");
         System.out.println("7. Reports");
+        System.out.println("8. Save");
         System.out.println("0. Exit");
         System.out.print("Choice : ");
     }
@@ -409,6 +413,19 @@ public class RestaurantConsole {
                 default: System.out.println("Invalid choice.");
             }
         } while (choice != 0);
+    }
+    
+    private void loadData() {
+        List<TableRestaurant> tables = restaurant.loadTables();
+        if (!tables.isEmpty()) {
+            tables.forEach(t -> restaurant.addTable(t.getId(), t.getTableNumber(), t.getCapacity()));
+            System.out.println("[LOAD] " + tables.size() + " tables chargées.");
+        }
+        List<Ingredient> ingredients = restaurant.loadIngredients();
+        if (!ingredients.isEmpty()) {
+            ingredients.forEach(i -> restaurant.addIngredient(i));
+            System.out.println("[LOAD] " + ingredients.size() + " ingrédients chargés.");
+        }
     }
     
 }
