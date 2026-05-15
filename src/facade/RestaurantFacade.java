@@ -1,8 +1,10 @@
 package facade;
 
 import factory.MenuItemFactory;
+
 import model.*;
 import service.*;
+import observer.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -71,7 +73,10 @@ public class RestaurantFacade {
         TableRestaurant table = tableService.findTableByNumber(tableNumber);
         if (table == null) return null;
         tableService.occupyTable(table);
-        return orderService.createOrder(id, table);
+        Order order = orderService.createOrder(id, table);
+        order.addObserver(new KitchenObserver()); // ← nouveau
+        order.addObserver(new WaiterObserver());  // ← nouveau
+        return order;
     }
 
     public void addItemToOrder(int orderId, int menuItemId, int quantity) {

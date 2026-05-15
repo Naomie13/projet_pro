@@ -1,7 +1,9 @@
 package model;
 
+import observer.OrderObserver;
 import state.OrderState;
 import state.NewState;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,65 +13,57 @@ public class Order {
     private TableRestaurant table;
     private List<OrderItem> items;
     private OrderState currentState;
+    private List<OrderObserver> observers; // ← nouveau
 
     public Order(int id, TableRestaurant table) {
         this.id = id;
         this.table = table;
         this.items = new ArrayList<>();
         this.currentState = new NewState();
+        this.observers = new ArrayList<>(); // ← nouveau
     }
 
-    public int getId() {
-        return id;
+    // ===== OBSERVER =====
+    public void addObserver(OrderObserver observer) {
+        observers.add(observer);
     }
 
-    public TableRestaurant getTable() {
-        return table;
+    public void removeObserver(OrderObserver observer) {
+        observers.remove(observer);
     }
 
-    public void setTable(TableRestaurant table) {
-        this.table = table;
+    public void notifyObservers() {
+        for (OrderObserver observer : observers) {
+            observer.update(this, getStatus());
+        }
     }
 
-    public List<OrderItem> getItems() {
-        return items;
-    }
-
-    public OrderStatus getStatus() {
-        return currentState.getStatus();
-    }
-
+    // ===== STATE =====
     public void setState(OrderState state) {
         this.currentState = state;
+        notifyObservers(); // ← notifie automatiquement après chaque changement
     }
 
-    public void prepare() {
-        currentState.prepare(this);
-    }
+    public void prepare() { currentState.prepare(this); }
+    public void ready()   { currentState.ready(this); }
+    public void serve()   { currentState.serve(this); }
+    public void pay()     { currentState.pay(this); }
+    public void cancel()  { currentState.cancel(this); }
 
-    public void ready() {
-        currentState.ready(this);
-    }
+    // ===== GETTERS/SETTERS =====
+    public int getId() { return id; }
 
-    public void serve() {
-        currentState.serve(this);
-    }
+    public TableRestaurant getTable() { return table; }
 
-    public void pay() {
-        currentState.pay(this);
-    }
+    public void setTable(TableRestaurant table) { this.table = table; }
 
-    public void cancel() {
-        currentState.cancel(this);
-    }
+    public List<OrderItem> getItems() { return items; }
 
-    public void addItem(OrderItem item) {
-        items.add(item);
-    }
+    public OrderStatus getStatus() { return currentState.getStatus(); }
 
-    public void removeItem(OrderItem item) {
-        items.remove(item);
-    }
+    public void addItem(OrderItem item) { items.add(item); }
+
+    public void removeItem(OrderItem item) { items.remove(item); }
 
     public double calculateTotal() {
         double total = 0;
