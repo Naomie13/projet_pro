@@ -48,14 +48,9 @@ public class TableRestaurant {
 	 }
 	 
 	 @Override
-	    public String toString() {
-
-	        return "Table " +
-	                tableNumber +
-	                " | Capacity : " +
-	                capacity +
-	                " | Status : " +
-	                status;
-	    }
-
+	 public String toString() {
+	     return "Table " + tableNumber +
+	            " | Capacity: " + capacity +
+	            " | Status: " + (status ? "LIBRE" : "OCCUPÉE");
+	 }
 }

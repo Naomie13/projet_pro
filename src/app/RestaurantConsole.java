@@ -29,6 +29,7 @@ public class RestaurantConsole {
                 case 4: manageEmployees(); break;
                 case 5: manageReservations(); break;
                 case 6: manageStock(); break;
+                case 7: manageReports(); break;
                 case 0: System.out.println("Application closed."); break;
                 default: System.out.println("Invalid choice.");
             }
@@ -43,6 +44,7 @@ public class RestaurantConsole {
         System.out.println("4. Manage Employees");
         System.out.println("5. Manage Reservations");
         System.out.println("6. Manage Stock");
+        System.out.println("7. Reports");
         System.out.println("0. Exit");
         System.out.print("Choice : ");
     }
@@ -384,6 +386,29 @@ public class RestaurantConsole {
         System.out.print("Quantité à ajouter: ");
         double amount = scanner.nextDouble();
         restaurant.restockIngredient(id, amount);
+    }
+    
+    private void manageReports() {
+        int choice;
+        do {
+            System.out.println("\n--- REPORTS ---");
+            System.out.println("1. Sales Report");
+            System.out.println("2. Popular Items");
+            System.out.println("3. Table Report");
+            System.out.println("4. Stock Report");
+            System.out.println("5. Full Report");
+            System.out.println("0. Back");
+            choice = scanner.nextInt();
+            switch (choice) {
+                case 1: restaurant.generateSalesReport(); break;
+                case 2: restaurant.generatePopularItemsReport(); break;
+                case 3: restaurant.generateTableReport(); break;
+                case 4: restaurant.generateStockReport(); break;
+                case 5: restaurant.generateFullReport(); break;
+                case 0: break;
+                default: System.out.println("Invalid choice.");
+            }
+        } while (choice != 0);
     }
     
 }

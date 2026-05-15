@@ -20,9 +20,8 @@ public class FoodItem extends MenuItem{
 
 	@Override
 	public String toString() {
-		return super.toString()+", spicy"+spicy;
-		}
-
+	    return super.toString() + " | Spicy: " + spicy;
+	}
 	
 
 	

@@ -19,9 +19,8 @@ public class DrinkItem extends MenuItem{
 
 	@Override
 	public String toString() {
-		return super.toString()+ "DrinkItem [alcoholic=" + alcoholic + "]";
+	    return super.toString() + " | Alcoholic: " + alcoholic;
 	}
-	
 	
 
 	

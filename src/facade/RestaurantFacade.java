@@ -19,6 +19,7 @@ public class RestaurantFacade {
     private EmployeeService employeeService;
     private ReservationService reservationService;
     private StockService stockService;
+    private ReportService reportService;
     
     public RestaurantFacade() {
         this.menuService = new MenuService();
@@ -27,6 +28,12 @@ public class RestaurantFacade {
         this.employeeService = new EmployeeService();
         this.reservationService = new ReservationService();
         this.stockService = new StockService();
+        this.reportService = new ReportService(
+        	    orderService.getAllOrders(),
+        	    menuService.getAllItems(),
+        	    tableService.getAllTables(),
+        	    stockService.getAllIngredients()
+        	);
     }
 
     // ===== MENU =====
@@ -112,6 +119,14 @@ public class RestaurantFacade {
             System.out.println("Commande introuvable.");
             return 0;
         }
+        if (order.getStatus() == OrderStatus.PAID) {
+            System.out.println("Erreur : la commande est déjà payée.");
+            return 0;
+        }
+        if (order.getStatus() == OrderStatus.CANCELLED) {
+            System.out.println("Erreur : la commande est annulée.");
+            return 0;
+        }
         double amount = order.calculateTotal();
         double finalAmount = strategy.processPayment(amount);
         order.pay();
@@ -179,4 +194,10 @@ public class RestaurantFacade {
     public List<Ingredient> getLowStockIngredients() {
         return stockService.getLowStockIngredients();
     }
+    
+    public void generateSalesReport() { reportService.generateSalesReport(); }
+    public void generatePopularItemsReport() { reportService.generatePopularItemsReport(); }
+    public void generateTableReport() { reportService.generateTableReport(); }
+    public void generateStockReport() { reportService.generateStockReport(); }
+    public void generateFullReport() { reportService.generateFullReport(); }
 }
