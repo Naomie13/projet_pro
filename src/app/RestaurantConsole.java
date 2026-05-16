@@ -17,7 +17,6 @@ public class RestaurantConsole {
     public RestaurantConsole() {
         scanner = new Scanner(System.in);
         restaurant = new RestaurantFacade();
-        loadData();
     }
 
     public void start() {
@@ -62,12 +61,14 @@ public class RestaurantConsole {
             System.out.println("1. Add Food");
             System.out.println("2. Add Drink");
             System.out.println("3. Show Menu");
+            System.out.println("4. Remove Item");
             System.out.println("0. Back");
             choice = scanner.nextInt();
             switch (choice) {
                 case 1: addFoodItem(); break;
                 case 2: addDrinkItem(); break;
                 case 3: showMenu(); break;
+                case 4: removeMenuItem(); break;
                 case 0: break;
                 default: System.out.println("Invalid choice.");
             }
@@ -115,6 +116,14 @@ public class RestaurantConsole {
             System.out.println(item);
         }
     }
+    
+    private void removeMenuItem() {
+        System.out.print("Item ID: ");
+        int id = scanner.nextInt();
+        restaurant.removeMenuItem(id);
+        System.out.println("Item supprimé.");
+    }
+
 
     // ================= ORDERS =================
     private void manageOrders() {
@@ -221,6 +230,7 @@ public class RestaurantConsole {
             System.out.println("2. Show Tables");
             System.out.println("3. Occupy Table");
             System.out.println("4. Free Table");
+            System.out.println("5. Remove Table");
             System.out.println("0. Back");
             choice = scanner.nextInt();
             switch (choice) {
@@ -228,6 +238,7 @@ public class RestaurantConsole {
                 case 2: showTables(); break;
                 case 3: occupyTable(); break;
                 case 4: freeTable(); break;
+                case 5: removeTable(); break;
                 case 0: break;
                 default: System.out.println("Invalid choice.");
             }
@@ -264,6 +275,13 @@ public class RestaurantConsole {
         restaurant.freeTable(number);
         System.out.println("Table freed.");
     }
+    
+    private void removeTable() {
+        System.out.print("Table ID: ");
+        int id = scanner.nextInt();
+        restaurant.removeTable(id);
+        System.out.println("Table supprimée.");
+    }
 
     // ================= EMPLOYEES =================
     private void manageEmployees() {
@@ -273,12 +291,14 @@ public class RestaurantConsole {
             System.out.println("1. Add Employee");
             System.out.println("2. Show Employees");
             System.out.println("3. Assign Waiter to Table");
+            System.out.println("4. Remove Employee");
             System.out.println("0. Back");
             choice = scanner.nextInt();
             switch (choice) {
                 case 1: addEmployee(); break;
                 case 2: showEmployees(); break;
                 case 3: assignWaiter(); break;
+                case 4: removeEmployee(); break;
                 case 0: break;
                 default: System.out.println("Invalid choice.");
             }
@@ -308,6 +328,13 @@ public class RestaurantConsole {
         for (Employee employee : restaurant.getAllEmployees()) {
             System.out.println(employee);
         }
+    }
+    
+    private void removeEmployee() {
+        System.out.print("Employee ID: ");
+        int id = scanner.nextInt();
+        restaurant.removeEmployee(id);
+        System.out.println("Employé supprimé.");
     }
 
     // ================= RESERVATIONS =================
@@ -377,6 +404,7 @@ public class RestaurantConsole {
             System.out.println("3. Consume Ingredient");
             System.out.println("4. Restock Ingredient");
             System.out.println("5. Show Low Stock");
+            System.out.println("6. Remove Ingredient");
             System.out.println("0. Back");
             choice = scanner.nextInt();
             switch (choice) {
@@ -385,6 +413,7 @@ public class RestaurantConsole {
                 case 3: consumeIngredient(); break;
                 case 4: restockIngredient(); break;
                 case 5: restaurant.getLowStockIngredients().forEach(System.out::println); break;
+                case 6: removeIngredient(); break;
                 case 0: break;
                 default: System.out.println("Invalid choice.");
             }
@@ -447,17 +476,13 @@ public class RestaurantConsole {
         } while (choice != 0);
     }
     
-    private void loadData() {
-        List<TableRestaurant> tables = restaurant.loadTables();
-        if (!tables.isEmpty()) {
-            tables.forEach(t -> restaurant.addTable(t.getId(), t.getTableNumber(), t.getCapacity()));
-            System.out.println("[LOAD] " + tables.size() + " tables chargées.");
-        }
-        List<Ingredient> ingredients = restaurant.loadIngredients();
-        if (!ingredients.isEmpty()) {
-            ingredients.forEach(i -> restaurant.addIngredient(i));
-            System.out.println("[LOAD] " + ingredients.size() + " ingrédients chargés.");
-        }
+    private void removeIngredient() {
+        System.out.print("Ingredient ID: ");
+        int id = scanner.nextInt();
+        restaurant.removeIngredient(id);
+        System.out.println("Ingrédient supprimé.");
     }
+    
+    
     
 }

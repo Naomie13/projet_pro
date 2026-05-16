@@ -315,5 +315,26 @@ public class RestaurantFacade {
     }
     
     
+    public void removeMenuItem(int id) {
+        menuService.removeItemById(id);
+        dbRepository.deleteMenuItem(id);
+    }
+
+    public void removeTable(int id) {
+        tableService.removeTableById(id);
+        dbRepository.deleteTable(id);
+    }
+
+    public void removeIngredient(int id) {
+        stockService.removeIngredient(id);
+        dbRepository.deleteIngredient(id);
+    }
+
+    public void removeEmployee(int id) {
+        employeeService.removeEmployeeById(id);
+        dbRepository.deleteEmployee(id);
+    }
+    
+    
     
 }

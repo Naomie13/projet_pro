@@ -21,6 +21,10 @@ public class EmployeeService {
     public void removeEmployee(Employee employee) {
         employees.remove(employee);
     }
+    
+    public void removeEmployeeById(int id) {
+        employees.removeIf(e -> e.getId() == id);
+    }
 
     public Employee findEmployeeById(int id) {
         for (Employee employee : employees) {

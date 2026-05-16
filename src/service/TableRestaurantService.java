@@ -27,6 +27,10 @@ public class TableRestaurantService {
 
         tables.remove(table);
     }
+    
+    public void removeTableById(int id) {
+        tables.removeIf(t -> t.getId() == id);
+    }
 
     // Rechercher une table par numéro
     public TableRestaurant findTableByNumber(int tableNumber) {

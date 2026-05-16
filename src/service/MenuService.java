@@ -16,6 +16,10 @@ public class MenuService {
     public void addItem(MenuItem item) {
         menuItems.add(item);
     }
+    
+    public void removeItemById(int id) {
+        menuItems.removeIf(item -> item.getId() == id);
+    }
 
     // afficher tous les items
     public List<MenuItem> getAllItems() {
