@@ -9,16 +9,19 @@ public class DataBase {
     private static volatile DataBase instance;
     private Connection connection;
 
-    private final String URL = "jdbc:mysql://localhost:3306/restaurant_db";
-    private final String USERNAME = "root";
-    private final String PASSWORD = "";
+    private static final String URL = "jdbc:mysql://localhost:3306/restaurant_db";
+    private static final String USERNAME = "root";
+    private static final String PASSWORD = "Admin123!";
 
     private DataBase() {
         try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
             connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
-            System.out.println("Database connected.");
+            System.out.println("[DB] Connexion établie.");
+        } catch (ClassNotFoundException e) {
+            System.out.println("[DB] Driver introuvable: " + e.getMessage());
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.out.println("[DB] Erreur connexion: " + e.getMessage());
         }
     }
 

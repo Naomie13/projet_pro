@@ -1,6 +1,7 @@
 package facade;
 
 import factory.MenuItemFactory;
+import repository.*;
 
 import model.*;
 import service.*;
@@ -21,6 +22,8 @@ public class RestaurantFacade {
     private StockService stockService;
     private ReportService reportService;
     private SaveService saveService;
+    private DatabaseRepository dbRepository;
+    
     
     public RestaurantFacade() {
         this.menuService = new MenuService();
@@ -36,37 +39,65 @@ public class RestaurantFacade {
             tableService.getAllTables(),
             stockService.getAllIngredients()
         );
+        this.dbRepository = new DatabaseRepository();
         loadData();
     }
 
     private void loadData() {
-        List<TableRestaurant> tables = saveService.loadTables();
+        // Essayer DB d'abord
+        List<TableRestaurant> tables = dbRepository.loadTables();
         if (!tables.isEmpty()) {
-            for (TableRestaurant t : tables) {
+            tables.forEach(t -> {
                 if (tableService.findTableByNumber(t.getTableNumber()) == null) {
                     tableService.addTable(t);
                 }
-            }
-            System.out.println("[LOAD] " + tables.size() + " tables chargées.");
+            });
+            System.out.println("[DB] " + tables.size() + " tables chargées.");
+        } else {
+            // Fallback Gson
+            List<TableRestaurant> jsonTables = saveService.loadTables();
+            jsonTables.forEach(t -> {
+                if (tableService.findTableByNumber(t.getTableNumber()) == null) {
+                    tableService.addTable(t);
+                }
+            });
+            if (!jsonTables.isEmpty())
+                System.out.println("[JSON] " + jsonTables.size() + " tables chargées.");
         }
 
-        List<Ingredient> ingredients = saveService.loadIngredients();
+        List<MenuItem> menuItems = dbRepository.loadMenuItems();
+        if (!menuItems.isEmpty()) {
+            menuItems.forEach(item -> menuService.addItem(item));
+            System.out.println("[DB] " + menuItems.size() + " items chargés.");
+        } else {
+            List<MenuItem> jsonItems = saveService.loadMenu();
+            jsonItems.forEach(item -> menuService.addItem(item));
+            if (!jsonItems.isEmpty())
+                System.out.println("[JSON] " + jsonItems.size() + " items chargés.");
+        }
+
+        List<Ingredient> ingredients = dbRepository.loadIngredients();
         if (!ingredients.isEmpty()) {
-            for (Ingredient i : ingredients) {
+            ingredients.forEach(i -> {
                 if (!stockService.findById(i.getId()).isPresent()) {
                     stockService.addIngredient(i);
                 }
-            }
-            System.out.println("[LOAD] " + ingredients.size() + " ingrédients chargés.");
+            });
+            System.out.println("[DB] " + ingredients.size() + " ingrédients chargés.");
+        } else {
+            List<Ingredient> jsonIngredients = saveService.loadIngredients();
+            jsonIngredients.forEach(i -> stockService.addIngredient(i));
+            if (!jsonIngredients.isEmpty())
+                System.out.println("[JSON] " + jsonIngredients.size() + " ingrédients chargés.");
         }
-        
-        List<MenuItem> menuItems = saveService.loadMenu();
-        if (!menuItems.isEmpty()) {
-            menuItems.forEach(item -> menuService.addItem(item));
-            System.out.println("[LOAD] " + menuItems.size() + " items chargés.");
+
+        List<Employee> employees = dbRepository.loadEmployees();
+        if (!employees.isEmpty()) {
+            employees.forEach(e -> employeeService.addEmployee(e));
+            System.out.println("[DB] " + employees.size() + " employés chargés.");
         }
     }
-
+    
     // ===== MENU =====
     public void addFood(int id, String name, double price, String description, boolean spicy) {
         MenuItem item = MenuItemFactory.create("food", id, name, price, description, spicy);
@@ -233,11 +264,18 @@ public class RestaurantFacade {
     public void generateFullReport() { reportService.generateFullReport(); }
     
     public void saveAll() {
+        // Gson backup
         saveService.saveAll(
             menuService.getAllItems(),
             tableService.getAllTables(),
             stockService.getAllIngredients()
         );
+        // DB principale
+        menuService.getAllItems().forEach(item -> dbRepository.saveMenuItem(item));
+        tableService.getAllTables().forEach(table -> dbRepository.saveTable(table));
+        stockService.getAllIngredients().forEach(i -> dbRepository.saveIngredient(i));
+        employeeService.getAllEmployees().forEach(e -> dbRepository.saveEmployee(e));
+        System.out.println("[DB] Sauvegarde DB complète.");
     }
 
     public List<TableRestaurant> loadTables() {
@@ -254,7 +292,13 @@ public class RestaurantFacade {
             System.out.println("Table introuvable.");
             return false;
         }
-        return employeeService.assignWaiterToTable(employeeId, tableNumber);
+        boolean result = employeeService.assignWaiterToTable(employeeId, tableNumber);
+        if (result) {
+            // Sauvegarder immédiatement en DB
+            Employee employee = employeeService.findEmployeeById(employeeId);
+            if (employee != null) dbRepository.saveEmployee(employee);
+        }
+        return result;
     }
     
     public boolean cancelReservation(String customerName) {
