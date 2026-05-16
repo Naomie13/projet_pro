@@ -59,6 +59,12 @@ public class RestaurantFacade {
             }
             System.out.println("[LOAD] " + ingredients.size() + " ingrédients chargés.");
         }
+        
+        List<MenuItem> menuItems = saveService.loadMenu();
+        if (!menuItems.isEmpty()) {
+            menuItems.forEach(item -> menuService.addItem(item));
+            System.out.println("[LOAD] " + menuItems.size() + " items chargés.");
+        }
     }
 
     // ===== MENU =====

@@ -26,10 +26,32 @@ public class SaveService {
 
     // ===== SAVE =====
     public void saveMenu(List<MenuItem> items) {
-        writeFile(MENU_FILE, items);
+        List<FoodItem> foods = new ArrayList<>();
+        List<DrinkItem> drinks = new ArrayList<>();
+        
+        for (MenuItem item : items) {
+            if (item instanceof FoodItem) foods.add((FoodItem) item);
+            else if (item instanceof DrinkItem) drinks.add((DrinkItem) item);
+        }
+        
+        writeFile(DATA_DIR + "foods.json", foods);
+        writeFile(DATA_DIR + "drinks.json", drinks);
         System.out.println("[SAVE] Menu sauvegardé.");
     }
 
+    public List<MenuItem> loadMenu() {
+        List<MenuItem> all = new ArrayList<>();
+        
+        Type foodType = new TypeToken<List<FoodItem>>(){}.getType();
+        Type drinkType = new TypeToken<List<DrinkItem>>(){}.getType();
+        
+        List<FoodItem> foods = readFile(DATA_DIR + "foods.json", foodType);
+        List<DrinkItem> drinks = readFile(DATA_DIR + "drinks.json", drinkType);
+        
+        all.addAll(foods);
+        all.addAll(drinks);
+        return all;
+    }
     public void saveTables(List<TableRestaurant> tables) {
         writeFile(TABLES_FILE, tables);
         System.out.println("[SAVE] Tables sauvegardées.");
