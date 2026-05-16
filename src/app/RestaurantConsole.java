@@ -1,6 +1,7 @@
 package app;
 
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Scanner;
 
@@ -271,15 +272,25 @@ public class RestaurantConsole {
             System.out.println("\n--- EMPLOYEE MANAGEMENT ---");
             System.out.println("1. Add Employee");
             System.out.println("2. Show Employees");
+            System.out.println("3. Assign Waiter to Table");
             System.out.println("0. Back");
             choice = scanner.nextInt();
             switch (choice) {
                 case 1: addEmployee(); break;
                 case 2: showEmployees(); break;
+                case 3: assignWaiter(); break;
                 case 0: break;
                 default: System.out.println("Invalid choice.");
             }
         } while (choice != 0);
+    }
+
+    private void assignWaiter() {
+        System.out.print("Employee ID: ");
+        int employeeId = scanner.nextInt();
+        System.out.print("Table Number: ");
+        int tableNumber = scanner.nextInt();
+        restaurant.assignWaiterToTable(employeeId, tableNumber);
     }
 
     private void addEmployee() {
@@ -295,7 +306,7 @@ public class RestaurantConsole {
 
     private void showEmployees() {
         for (Employee employee : restaurant.getAllEmployees()) {
-            System.out.println(employee.getId() + " - " + employee.getName());
+            System.out.println(employee);
         }
     }
 
@@ -306,15 +317,36 @@ public class RestaurantConsole {
             System.out.println("\n--- RESERVATION MANAGEMENT ---");
             System.out.println("1. Add Reservation");
             System.out.println("2. Show Reservations");
+            System.out.println("3. Cancel Reservation");
+            System.out.println("4. Modify Reservation");
             System.out.println("0. Back");
             choice = scanner.nextInt();
             switch (choice) {
                 case 1: addReservation(); break;
                 case 2: showReservations(); break;
+                case 3: cancelReservation(); break;
+                case 4: modifyReservation(); break;
                 case 0: break;
                 default: System.out.println("Invalid choice.");
             }
         } while (choice != 0);
+    }
+
+    private void cancelReservation() {
+        scanner.nextLine();
+        System.out.print("Customer name: ");
+        String name = scanner.nextLine();
+        restaurant.cancelReservation(name);
+    }
+
+    private void modifyReservation() {
+        scanner.nextLine();
+        System.out.print("Customer name: ");
+        String name = scanner.nextLine();
+        System.out.print("New table number: ");
+        int tableNumber = scanner.nextInt();
+        restaurant.modifyReservation(name, tableNumber, LocalDateTime.now());
+        System.out.println("Réservation modifiée.");
     }
 
     private void addReservation() {

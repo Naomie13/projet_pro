@@ -28,6 +28,14 @@ public class Reservation {
     public LocalDateTime getDateTime() {
         return dateTime;
     }
+    
+    public void setTable(TableRestaurant table) {
+        this.table = table;
+    }
+
+    public void setDateTime(LocalDateTime dateTime) {
+        this.dateTime = dateTime;
+    }
 
     @Override
     public String toString() {

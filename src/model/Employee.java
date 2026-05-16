@@ -1,5 +1,6 @@
 package model;
 
+
 public abstract class Employee {
 	
 	protected int id;
@@ -29,4 +30,6 @@ public abstract class Employee {
 		this.name = name;
 	}
     
+	
+	
 }

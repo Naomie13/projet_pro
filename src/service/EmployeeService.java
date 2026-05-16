@@ -1,6 +1,7 @@
 package service;
 
 import model.Employee;
+import model.Waiter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,40 +10,44 @@ public class EmployeeService {
 
     private List<Employee> employees;
 
-    // Constructeur
     public EmployeeService() {
-
         employees = new ArrayList<>();
     }
 
-    // Ajouter employé
     public void addEmployee(Employee employee) {
-
         employees.add(employee);
     }
 
-    // Supprimer employé
     public void removeEmployee(Employee employee) {
-
         employees.remove(employee);
     }
 
-    // Rechercher employé par ID
     public Employee findEmployeeById(int id) {
-
         for (Employee employee : employees) {
-
             if (employee.getId() == id) {
                 return employee;
             }
         }
-
         return null;
     }
 
-    // Afficher tous les employés
     public List<Employee> getAllEmployees() {
-
         return employees;
+    }
+
+    public boolean assignWaiterToTable(int employeeId, int tableNumber) {
+        Employee employee = findEmployeeById(employeeId);
+        if (employee == null) {
+            System.out.println("Employé introuvable.");
+            return false;
+        }
+        if (!(employee instanceof Waiter)) {
+            System.out.println("Cet employé n'est pas un serveur.");
+            return false;
+        }
+        Waiter waiter = (Waiter) employee;
+        waiter.setAssignedTableNumber(tableNumber);
+        System.out.println(waiter.getName() + " assigné à la table #" + tableNumber);
+        return true;
     }
 }

@@ -242,6 +242,28 @@ public class RestaurantFacade {
         return saveService.loadIngredients();
     }
     
+    public boolean assignWaiterToTable(int employeeId, int tableNumber) {
+        TableRestaurant table = tableService.findTableByNumber(tableNumber);
+        if (table == null) {
+            System.out.println("Table introuvable.");
+            return false;
+        }
+        return employeeService.assignWaiterToTable(employeeId, tableNumber);
+    }
+    
+    public boolean cancelReservation(String customerName) {
+        return reservationService.cancelReservation(customerName);
+    }
+
+    public boolean modifyReservation(String customerName, int newTableNumber, LocalDateTime newDateTime) {
+        TableRestaurant table = tableService.findTableByNumber(newTableNumber);
+        if (table == null) {
+            System.out.println("Table introuvable.");
+            return false;
+        }
+        return reservationService.modifyReservation(customerName, table, newDateTime);
+    }
+    
     
     
 }
