@@ -1,8 +1,6 @@
 package app;
 
-
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Scanner;
 
 import facade.RestaurantFacade;
@@ -20,173 +18,183 @@ public class RestaurantConsole {
     }
 
     public void start() {
-        int choice;
+        int choix;
         do {
-            displayMainMenu();
-            choice = scanner.nextInt();
-            switch (choice) {
-                case 1: manageMenu(); break;
-                case 2: manageOrders(); break;
-                case 3: manageTables(); break;
-                case 4: manageEmployees(); break;
-                case 5: manageReservations(); break;
-                case 6: manageStock(); break;
-                case 7: manageReports(); break;
+            afficherMenuPrincipal();
+            choix = scanner.nextInt();
+            switch (choix) {
+                case 1: gererMenu(); break;
+                case 2: gererCommandes(); break;
+                case 3: gererTables(); break;
+                case 4: gererPersonnel(); break;
+                case 5: gererReservations(); break;
+                case 6: gererStock(); break;
+                case 7: gererRapports(); break;
                 case 8: restaurant.saveAll(); break;
-                case 0: System.out.println("Application closed."); break;
-                default: System.out.println("Invalid choice.");
+                case 0:
+                    restaurant.saveAll();
+                    System.out.println("Application fermée. À bientôt!");
+                    break;
+                default: System.out.println("Choix invalide.");
             }
-        } while (choice != 0);
+        } while (choix != 0);
     }
 
-    private void displayMainMenu() {
-        System.out.println("\n========== RESTAURANT SYSTEM ==========");
-        System.out.println("1. Manage Menu");
-        System.out.println("2. Manage Orders");
-        System.out.println("3. Manage Tables");
-        System.out.println("4. Manage Employees");
-        System.out.println("5. Manage Reservations");
-        System.out.println("6. Manage Stock");
-        System.out.println("7. Reports");
-        System.out.println("8. Save");
-        System.out.println("0. Exit");
-        System.out.print("Choice : ");
+    private void afficherMenuPrincipal() {
+        System.out.println("\n========== SYSTÈME DE GESTION RESTAURANT ==========");
+        System.out.println("1. Gestion du menu");
+        System.out.println("2. Gestion des commandes");
+        System.out.println("3. Gestion des tables");
+        System.out.println("4. Gestion du personnel");
+        System.out.println("5. Gestion des réservations");
+        System.out.println("6. Gestion du stock");
+        System.out.println("7. Rapports");
+        System.out.println("8. Sauvegarder");
+        System.out.println("0. Quitter");
+        System.out.print("Votre choix : ");
     }
 
     // ================= MENU =================
-    private void manageMenu() {
-        int choice;
+    private void gererMenu() {
+        int choix;
         do {
-            System.out.println("\n--- MENU MANAGEMENT ---");
-            System.out.println("1. Add Food");
-            System.out.println("2. Add Drink");
-            System.out.println("3. Show Menu");
-            System.out.println("4. Remove Item");
-            System.out.println("0. Back");
-            choice = scanner.nextInt();
-            switch (choice) {
-                case 1: addFoodItem(); break;
-                case 2: addDrinkItem(); break;
-                case 3: showMenu(); break;
-                case 4: removeMenuItem(); break;
+            System.out.println("\n--- GESTION DU MENU ---");
+            System.out.println("1. Ajouter un plat");
+            System.out.println("2. Ajouter une boisson");
+            System.out.println("3. Afficher le menu");
+            System.out.println("4. Supprimer un item");
+            System.out.println("0. Retour");
+            choix = scanner.nextInt();
+            switch (choix) {
+                case 1: ajouterPlat(); break;
+                case 2: ajouterBoisson(); break;
+                case 3: afficherMenu(); break;
+                case 4: supprimerItemMenu(); break;
                 case 0: break;
-                default: System.out.println("Invalid choice.");
+                default: System.out.println("Choix invalide.");
             }
-        } while (choice != 0);
+        } while (choix != 0);
     }
 
-    private void addFoodItem() {
+    private void ajouterPlat() {
         scanner.nextLine();
         System.out.print("ID: ");
         int id = scanner.nextInt();
         scanner.nextLine();
-        System.out.print("Name: ");
+        System.out.print("Nom: ");
         String name = scanner.nextLine();
-        System.out.print("Price: ");
+        System.out.print("Prix: ");
         double price = scanner.nextDouble();
         scanner.nextLine();
         System.out.print("Description: ");
         String description = scanner.nextLine();
-        System.out.print("Spicy (true/false): ");
+        System.out.print("Épicé (true/false): ");
         boolean spicy = scanner.nextBoolean();
         restaurant.addFood(id, name, price, description, spicy);
-        System.out.println("Food added successfully.");
+        System.out.println("Plat ajouté avec succès.");
     }
 
-    private void addDrinkItem() {
+    private void ajouterBoisson() {
         scanner.nextLine();
         System.out.print("ID: ");
         int id = scanner.nextInt();
         scanner.nextLine();
-        System.out.print("Name: ");
+        System.out.print("Nom: ");
         String name = scanner.nextLine();
-        System.out.print("Price: ");
+        System.out.print("Prix: ");
         double price = scanner.nextDouble();
         scanner.nextLine();
         System.out.print("Description: ");
         String description = scanner.nextLine();
-        System.out.print("Alcoholic (true/false): ");
+        System.out.print("Alcoolisé (true/false): ");
         boolean alcoholic = scanner.nextBoolean();
         restaurant.addDrink(id, name, price, description, alcoholic);
-        System.out.println("Drink added successfully.");
+        System.out.println("Boisson ajoutée avec succès.");
     }
 
-    private void showMenu() {
+    private void afficherMenu() {
+        if (restaurant.getMenu().isEmpty()) {
+            System.out.println("Le menu est vide.");
+            return;
+        }
         for (MenuItem item : restaurant.getMenu()) {
             System.out.println(item);
         }
     }
-    
-    private void removeMenuItem() {
-        System.out.print("Item ID: ");
+
+    private void supprimerItemMenu() {
+        System.out.print("ID de l'item à supprimer: ");
         int id = scanner.nextInt();
         restaurant.removeMenuItem(id);
         System.out.println("Item supprimé.");
     }
 
-
-    // ================= ORDERS =================
-    private void manageOrders() {
-        int choice;
+    // ================= COMMANDES =================
+    private void gererCommandes() {
+        int choix;
         do {
-            System.out.println("\n--- ORDER MANAGEMENT ---");
-            System.out.println("1. Create Order");
-            System.out.println("2. Show Orders");
-            System.out.println("3. Add Item to Order");
-            System.out.println("4. Prepare Order");
-            System.out.println("5. Order Ready");
-            System.out.println("6. Serve Order");
-            System.out.println("7. Pay Order");
-            System.out.println("8. Cancel Order");
-            System.out.println("0. Back");
-            choice = scanner.nextInt();
-            switch (choice) {
-                case 1: createOrder(); break;
-                case 2: showOrders(); break;
-                case 3: addItemToOrder(); break;
-                case 4: updateOrderState("prepare"); break;
-                case 5: updateOrderState("ready"); break;
-                case 6: updateOrderState("serve"); break;
-                case 7: payOrderWithStrategy(); break;
-                case 8: updateOrderState("cancel"); break;
+            System.out.println("\n--- GESTION DES COMMANDES ---");
+            System.out.println("1. Créer une commande");
+            System.out.println("2. Afficher les commandes");
+            System.out.println("3. Ajouter un item à une commande");
+            System.out.println("4. Mettre en préparation");
+            System.out.println("5. Commande prête");
+            System.out.println("6. Servir la commande");
+            System.out.println("7. Payer la commande");
+            System.out.println("8. Annuler la commande");
+            System.out.println("0. Retour");
+            choix = scanner.nextInt();
+            switch (choix) {
+                case 1: creerCommande(); break;
+                case 2: afficherCommandes(); break;
+                case 3: ajouterItemCommande(); break;
+                case 4: changerEtatCommande("prepare"); break;
+                case 5: changerEtatCommande("ready"); break;
+                case 6: changerEtatCommande("serve"); break;
+                case 7: payerCommande(); break;
+                case 8: changerEtatCommande("cancel"); break;
                 case 0: break;
-                default: System.out.println("Invalid choice.");
+                default: System.out.println("Choix invalide.");
             }
-        } while (choice != 0);
+        } while (choix != 0);
     }
 
-    private void createOrder() {
-        System.out.print("Order ID: ");
+    private void creerCommande() {
+        System.out.print("ID de la commande: ");
         int id = scanner.nextInt();
-        System.out.print("Table Number: ");
+        System.out.print("Numéro de table: ");
         int tableNumber = scanner.nextInt();
         Order order = restaurant.createOrder(id, tableNumber);
         if (order == null) {
-            System.out.println("Table not found.");
+            System.out.println("Table introuvable.");
         } else {
-            System.out.println("Order created successfully.");
+            System.out.println("Commande créée avec succès.");
         }
     }
 
-    private void showOrders() {
+    private void afficherCommandes() {
+        if (restaurant.getAllOrders().isEmpty()) {
+            System.out.println("Aucune commande.");
+            return;
+        }
         for (Order order : restaurant.getAllOrders()) {
             System.out.println(order);
         }
     }
 
-    private void addItemToOrder() {
-        System.out.print("Order ID: ");
+    private void ajouterItemCommande() {
+        System.out.print("ID de la commande: ");
         int orderId = scanner.nextInt();
-        System.out.print("Menu Item ID: ");
+        System.out.print("ID de l'item du menu: ");
         int itemId = scanner.nextInt();
-        System.out.print("Quantity: ");
+        System.out.print("Quantité: ");
         int quantity = scanner.nextInt();
         restaurant.addItemToOrder(orderId, itemId, quantity);
-        System.out.println("Item added to order.");
+        System.out.println("Item ajouté à la commande.");
     }
 
-    private void updateOrderState(String action) {
-        System.out.print("Order ID: ");
+    private void changerEtatCommande(String action) {
+        System.out.print("ID de la commande: ");
         int orderId = scanner.nextInt();
         switch (action) {
             case "prepare": restaurant.prepareOrder(orderId); break;
@@ -195,19 +203,18 @@ public class RestaurantConsole {
             case "cancel":  restaurant.cancelOrder(orderId); break;
         }
     }
-    private void payOrderWithStrategy() {
-        System.out.print("Order ID: ");
-        int orderId = scanner.nextInt();
 
+    private void payerCommande() {
+        System.out.print("ID de la commande: ");
+        int orderId = scanner.nextInt();
         System.out.println("Méthode de paiement:");
         System.out.println("1. Espèces (-2%)");
-        System.out.println("2. Carte (+1.5%)");
-        System.out.println("3. En ligne (+2.5%)");
-        System.out.print("Choix: ");
-        int choice = scanner.nextInt();
-
+        System.out.println("2. Carte bancaire (+1.5%)");
+        System.out.println("3. Paiement en ligne (+2.5%)");
+        System.out.print("Votre choix: ");
+        int choix = scanner.nextInt();
         PaymentStrategy strategy;
-        switch (choice) {
+        switch (choix) {
             case 1: strategy = new CashStrategy(); break;
             case 2: strategy = new CardStrategy(); break;
             case 3: strategy = new OnlineStrategy(); break;
@@ -215,212 +222,222 @@ public class RestaurantConsole {
                 System.out.println("Choix invalide.");
                 return;
         }
-
         double total = restaurant.payOrder(orderId, strategy);
         System.out.println("Paiement effectué : " + String.format("%.2f", total) + " €");
     }
 
-    
     // ================= TABLES =================
-    private void manageTables() {
-        int choice;
+    private void gererTables() {
+        int choix;
         do {
-            System.out.println("\n--- TABLE MANAGEMENT ---");
-            System.out.println("1. Add Table");
-            System.out.println("2. Show Tables");
-            System.out.println("3. Occupy Table");
-            System.out.println("4. Free Table");
-            System.out.println("5. Remove Table");
-            System.out.println("0. Back");
-            choice = scanner.nextInt();
-            switch (choice) {
-                case 1: addTable(); break;
-                case 2: showTables(); break;
-                case 3: occupyTable(); break;
-                case 4: freeTable(); break;
-                case 5: removeTable(); break;
+            System.out.println("\n--- GESTION DES TABLES ---");
+            System.out.println("1. Ajouter une table");
+            System.out.println("2. Afficher les tables");
+            System.out.println("3. Occuper une table");
+            System.out.println("4. Libérer une table");
+            System.out.println("5. Supprimer une table");
+            System.out.println("0. Retour");
+            choix = scanner.nextInt();
+            switch (choix) {
+                case 1: ajouterTable(); break;
+                case 2: afficherTables(); break;
+                case 3: occuperTable(); break;
+                case 4: libererTable(); break;
+                case 5: supprimerTable(); break;
                 case 0: break;
-                default: System.out.println("Invalid choice.");
+                default: System.out.println("Choix invalide.");
             }
-        } while (choice != 0);
+        } while (choix != 0);
     }
 
-    private void addTable() {
+    private void ajouterTable() {
         System.out.print("ID: ");
         int id = scanner.nextInt();
-        System.out.print("Table Number: ");
+        System.out.print("Numéro de table: ");
         int number = scanner.nextInt();
-        System.out.print("Capacity: ");
+        System.out.print("Capacité: ");
         int capacity = scanner.nextInt();
         restaurant.addTable(id, number, capacity);
-        System.out.println("Table added successfully.");
+        System.out.println("Table ajoutée avec succès.");
     }
 
-    private void showTables() {
+    private void afficherTables() {
+        if (restaurant.getAllTables().isEmpty()) {
+            System.out.println("Aucune table enregistrée.");
+            return;
+        }
         for (TableRestaurant table : restaurant.getAllTables()) {
             System.out.println(table);
         }
     }
 
-    private void occupyTable() {
-        System.out.print("Table Number: ");
+    private void occuperTable() {
+        System.out.print("Numéro de table: ");
         int number = scanner.nextInt();
         restaurant.occupyTable(number);
-        System.out.println("Table occupied.");
+        System.out.println("Table occupée.");
     }
 
-    private void freeTable() {
-        System.out.print("Table Number: ");
+    private void libererTable() {
+        System.out.print("Numéro de table: ");
         int number = scanner.nextInt();
         restaurant.freeTable(number);
-        System.out.println("Table freed.");
+        System.out.println("Table libérée.");
     }
-    
-    private void removeTable() {
-        System.out.print("Table ID: ");
+
+    private void supprimerTable() {
+        System.out.print("ID de la table: ");
         int id = scanner.nextInt();
         restaurant.removeTable(id);
         System.out.println("Table supprimée.");
     }
 
-    // ================= EMPLOYEES =================
-    private void manageEmployees() {
-        int choice;
+    // ================= PERSONNEL =================
+    private void gererPersonnel() {
+        int choix;
         do {
-            System.out.println("\n--- EMPLOYEE MANAGEMENT ---");
-            System.out.println("1. Add Employee");
-            System.out.println("2. Show Employees");
-            System.out.println("3. Assign Waiter to Table");
-            System.out.println("4. Remove Employee");
-            System.out.println("0. Back");
-            choice = scanner.nextInt();
-            switch (choice) {
-                case 1: addEmployee(); break;
-                case 2: showEmployees(); break;
-                case 3: assignWaiter(); break;
-                case 4: removeEmployee(); break;
+            System.out.println("\n--- GESTION DU PERSONNEL ---");
+            System.out.println("1. Ajouter un employé");
+            System.out.println("2. Afficher le personnel");
+            System.out.println("3. Affecter un serveur à une table");
+            System.out.println("4. Supprimer un employé");
+            System.out.println("0. Retour");
+            choix = scanner.nextInt();
+            switch (choix) {
+                case 1: ajouterEmploye(); break;
+                case 2: afficherPersonnel(); break;
+                case 3: affecterServeur(); break;
+                case 4: supprimerEmploye(); break;
                 case 0: break;
-                default: System.out.println("Invalid choice.");
+                default: System.out.println("Choix invalide.");
             }
-        } while (choice != 0);
+        } while (choix != 0);
     }
 
-    private void assignWaiter() {
-        System.out.print("Employee ID: ");
-        int employeeId = scanner.nextInt();
-        System.out.print("Table Number: ");
-        int tableNumber = scanner.nextInt();
-        restaurant.assignWaiterToTable(employeeId, tableNumber);
-    }
-
-    private void addEmployee() {
-        System.out.print("Employee ID: ");
+    private void ajouterEmploye() {
+        System.out.print("ID: ");
         int id = scanner.nextInt();
         scanner.nextLine();
-        System.out.print("Name: ");
+        System.out.print("Nom: ");
         String name = scanner.nextLine();
         Waiter waiter = new Waiter(id, name);
         restaurant.addEmployee(waiter);
-        System.out.println("Employee added successfully.");
+        System.out.println("Employé ajouté avec succès.");
     }
 
-    private void showEmployees() {
+    private void afficherPersonnel() {
+        if (restaurant.getAllEmployees().isEmpty()) {
+            System.out.println("Aucun employé enregistré.");
+            return;
+        }
         for (Employee employee : restaurant.getAllEmployees()) {
             System.out.println(employee);
         }
     }
-    
-    private void removeEmployee() {
-        System.out.print("Employee ID: ");
+
+    private void affecterServeur() {
+        System.out.print("ID du serveur: ");
+        int employeeId = scanner.nextInt();
+        System.out.print("Numéro de table: ");
+        int tableNumber = scanner.nextInt();
+        restaurant.assignWaiterToTable(employeeId, tableNumber);
+    }
+
+    private void supprimerEmploye() {
+        System.out.print("ID de l'employé: ");
         int id = scanner.nextInt();
         restaurant.removeEmployee(id);
         System.out.println("Employé supprimé.");
     }
 
     // ================= RESERVATIONS =================
-    private void manageReservations() {
-        int choice;
+    private void gererReservations() {
+        int choix;
         do {
-            System.out.println("\n--- RESERVATION MANAGEMENT ---");
-            System.out.println("1. Add Reservation");
-            System.out.println("2. Show Reservations");
-            System.out.println("3. Cancel Reservation");
-            System.out.println("4. Modify Reservation");
-            System.out.println("0. Back");
-            choice = scanner.nextInt();
-            switch (choice) {
-                case 1: addReservation(); break;
-                case 2: showReservations(); break;
-                case 3: cancelReservation(); break;
-                case 4: modifyReservation(); break;
+            System.out.println("\n--- GESTION DES RÉSERVATIONS ---");
+            System.out.println("1. Ajouter une réservation");
+            System.out.println("2. Afficher les réservations");
+            System.out.println("3. Annuler une réservation");
+            System.out.println("4. Modifier une réservation");
+            System.out.println("0. Retour");
+            choix = scanner.nextInt();
+            switch (choix) {
+                case 1: ajouterReservation(); break;
+                case 2: afficherReservations(); break;
+                case 3: annulerReservation(); break;
+                case 4: modifierReservation(); break;
                 case 0: break;
-                default: System.out.println("Invalid choice.");
+                default: System.out.println("Choix invalide.");
             }
-        } while (choice != 0);
+        } while (choix != 0);
     }
 
-    private void cancelReservation() {
+    private void ajouterReservation() {
         scanner.nextLine();
-        System.out.print("Customer name: ");
+        System.out.print("Nom du client: ");
+        String name = scanner.nextLine();
+        System.out.print("Téléphone: ");
+        String phone = scanner.nextLine();
+        System.out.print("Numéro de table: ");
+        int tableNumber = scanner.nextInt();
+        restaurant.addReservation(name, phone, tableNumber);
+        System.out.println("Réservation ajoutée avec succès.");
+    }
+
+    private void afficherReservations() {
+        if (restaurant.getAllReservations().isEmpty()) {
+            System.out.println("Aucune réservation.");
+            return;
+        }
+        for (Reservation reservation : restaurant.getAllReservations()) {
+            System.out.println(reservation);
+        }
+    }
+
+    private void annulerReservation() {
+        scanner.nextLine();
+        System.out.print("Nom du client: ");
         String name = scanner.nextLine();
         restaurant.cancelReservation(name);
     }
 
-    private void modifyReservation() {
+    private void modifierReservation() {
         scanner.nextLine();
-        System.out.print("Customer name: ");
+        System.out.print("Nom du client: ");
         String name = scanner.nextLine();
-        System.out.print("New table number: ");
+        System.out.print("Nouveau numéro de table: ");
         int tableNumber = scanner.nextInt();
         restaurant.modifyReservation(name, tableNumber, LocalDateTime.now());
         System.out.println("Réservation modifiée.");
     }
 
-    private void addReservation() {
-        scanner.nextLine();
-        System.out.print("Customer name: ");
-        String name = scanner.nextLine();
-        System.out.print("Customer phone: ");
-        String phone = scanner.nextLine();
-        System.out.print("Table number: ");
-        int tableNumber = scanner.nextInt();
-        restaurant.addReservation(name, phone, tableNumber);
-        System.out.println("Reservation added successfully.");
-    }
-
-    private void showReservations() {
-        for (Reservation reservation : restaurant.getAllReservations()) {
-            System.out.println(reservation);
-        }
-    }
-    
-    
-    private void manageStock() {
-        int choice;
+    // ================= STOCK =================
+    private void gererStock() {
+        int choix;
         do {
-            System.out.println("\n--- STOCK MANAGEMENT ---");
-            System.out.println("1. Add Ingredient");
-            System.out.println("2. Show All Ingredients");
-            System.out.println("3. Consume Ingredient");
-            System.out.println("4. Restock Ingredient");
-            System.out.println("5. Show Low Stock");
-            System.out.println("6. Remove Ingredient");
-            System.out.println("0. Back");
-            choice = scanner.nextInt();
-            switch (choice) {
-                case 1: addIngredient(); break;
+            System.out.println("\n--- GESTION DU STOCK ---");
+            System.out.println("1. Ajouter un ingrédient");
+            System.out.println("2. Afficher le stock");
+            System.out.println("3. Consommer un ingrédient");
+            System.out.println("4. Réapprovisionner");
+            System.out.println("5. Afficher stock bas");
+            System.out.println("6. Supprimer un ingrédient");
+            System.out.println("0. Retour");
+            choix = scanner.nextInt();
+            switch (choix) {
+                case 1: ajouterIngredient(); break;
                 case 2: restaurant.getAllIngredients().forEach(System.out::println); break;
-                case 3: consumeIngredient(); break;
-                case 4: restockIngredient(); break;
+                case 3: consommerIngredient(); break;
+                case 4: reapprovisionner(); break;
                 case 5: restaurant.getLowStockIngredients().forEach(System.out::println); break;
-                case 6: removeIngredient(); break;
+                case 6: supprimerIngredient(); break;
                 case 0: break;
-                default: System.out.println("Invalid choice.");
+                default: System.out.println("Choix invalide.");
             }
-        } while (choice != 0);
+        } while (choix != 0);
     }
 
-    private void addIngredient() {
+    private void ajouterIngredient() {
         System.out.print("ID: ");
         int id = scanner.nextInt();
         scanner.nextLine();
@@ -437,52 +454,50 @@ public class RestaurantConsole {
         System.out.println("Ingrédient ajouté.");
     }
 
-    private void consumeIngredient() {
-        System.out.print("Ingredient ID: ");
+    private void consommerIngredient() {
+        System.out.print("ID de l'ingrédient: ");
         int id = scanner.nextInt();
         System.out.print("Quantité à consommer: ");
         double amount = scanner.nextDouble();
         restaurant.consumeIngredient(id, amount);
     }
 
-    private void restockIngredient() {
-        System.out.print("Ingredient ID: ");
+    private void reapprovisionner() {
+        System.out.print("ID de l'ingrédient: ");
         int id = scanner.nextInt();
         System.out.print("Quantité à ajouter: ");
         double amount = scanner.nextDouble();
         restaurant.restockIngredient(id, amount);
     }
-    
-    private void manageReports() {
-        int choice;
+
+    private void supprimerIngredient() {
+        System.out.print("ID de l'ingrédient: ");
+        int id = scanner.nextInt();
+        restaurant.removeIngredient(id);
+        System.out.println("Ingrédient supprimé.");
+    }
+
+    // ================= RAPPORTS =================
+    private void gererRapports() {
+        int choix;
         do {
-            System.out.println("\n--- REPORTS ---");
-            System.out.println("1. Sales Report");
-            System.out.println("2. Popular Items");
-            System.out.println("3. Table Report");
-            System.out.println("4. Stock Report");
-            System.out.println("5. Full Report");
-            System.out.println("0. Back");
-            choice = scanner.nextInt();
-            switch (choice) {
+            System.out.println("\n--- RAPPORTS ---");
+            System.out.println("1. Rapport des ventes");
+            System.out.println("2. Plats les plus commandés");
+            System.out.println("3. Rapport des tables");
+            System.out.println("4. Rapport du stock");
+            System.out.println("5. Rapport complet");
+            System.out.println("0. Retour");
+            choix = scanner.nextInt();
+            switch (choix) {
                 case 1: restaurant.generateSalesReport(); break;
                 case 2: restaurant.generatePopularItemsReport(); break;
                 case 3: restaurant.generateTableReport(); break;
                 case 4: restaurant.generateStockReport(); break;
                 case 5: restaurant.generateFullReport(); break;
                 case 0: break;
-                default: System.out.println("Invalid choice.");
+                default: System.out.println("Choix invalide.");
             }
-        } while (choice != 0);
+        } while (choix != 0);
     }
-    
-    private void removeIngredient() {
-        System.out.print("Ingredient ID: ");
-        int id = scanner.nextInt();
-        restaurant.removeIngredient(id);
-        System.out.println("Ingrédient supprimé.");
-    }
-    
-    
-    
 }
