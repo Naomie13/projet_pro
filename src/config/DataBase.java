@@ -9,9 +9,9 @@ public class DataBase {
     private static volatile DataBase instance;
     private Connection connection;
 
-    private static final String URL = "jdbc:mysql://localhost:3306/restaurant_db";
+    private static final String URL = "jdbc:mysql://zephyr.proxy.rlwy.net:27382/railway?useSSL=false&allowPublicKeyRetrieval=true";
     private static final String USERNAME = "root";
-    private static final String PASSWORD = "Admin123!";
+    private static final String PASSWORD = "kdqsyvZfbdogndeAyfIXmrFkQVnNaVxR";
 
     private DataBase() {
         try {
